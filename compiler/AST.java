@@ -97,6 +97,15 @@ public class AST {
 		@Override
 		public <S,E extends Exception> S accept(BaseASTVisitor<S,E> visitor) throws E {return visitor.visitNode(this);}
 	}
+
+	public static class DivNode extends Node {
+		final Node left;
+		final Node right;
+		DivNode(Node l, Node r) {left = l; right = r;}
+
+		@Override
+		public <S,E extends Exception> S accept(BaseASTVisitor<S,E> visitor) throws E {return visitor.visitNode(this);}
+	}
 	
 	public static class PlusNode extends Node {
 		final Node left;
