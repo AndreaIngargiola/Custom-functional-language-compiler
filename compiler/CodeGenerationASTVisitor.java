@@ -143,19 +143,21 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 				visit(n.right),
 				"stm",
 				"ltm",
-				"beq "+l1,
+				"beq "+l1,	//se sono uguali allora restituisco true e salto alla fine (l4)
 				"b "+l2,
 				l1+":",
 				"push 1",
 				"b "+l4,
 				l2+":",
 				"ltm",
-				"bleq "+l3,
-				"push 1",
+				"bleq "+l3, //ricarico il secondo elemento e vedo se il primo è minore del secondo, se lo è allora restituisco false
+				"push 1",	//se non lo è vuol dire che il primo è strettamente maggiore del secondo e restituisco true
 				"b "+l4,
 				l3+":",
 				"push 0",
-				l4+":"
+				l4+":",
+				"push 0",	//reset tm
+				"stm"
 		);
 	}
 
@@ -229,6 +231,79 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 			              // by following the static chain (of Access Links)
 			"push "+n.entry.offset, "add", // compute address of "id" declaration
 			"lw" // load value of "id" variable
+		);
+	}
+
+	@Override
+	public String visitNode(AndNode n) {
+		if (print) printNode(n);
+		String l1 = freshLabel();
+		String l2 = freshLabel();
+		String l3 = freshLabel();
+		return nlJoin(
+				visit(n.left),
+				visit(n.right),
+				"stm",
+				"ltm",
+				"push 0",       //confronta se il secondo termine è false
+				"beq "+l1, 		//so che il secondo termine è uguale a false quindi il risultato dell'and è false
+				"ltm",			//se non lo è allora il secondo termine è true (1) e lo moltiplico per il primo
+				"mult",
+				"push 1",
+				"beq "+l3,		//se il risultato è uguale a 1 vuol dire che avevo true && true
+								//se il risultato è uguale a 0 vuol dire che avevo false && true
+				l1+":",			//so che uno dei due termini è uguale a false
+				"push 0",		//quindi il risultato dell'and è false
+				"b "+l2,
+				l3+":",
+				"push 1",
+				l2+":",
+				"push 0",		//reset tm
+				"stm"
+		);
+	}
+
+
+	@Override
+	public String visitNode(OrNode n) {
+		if (print) printNode(n);
+		String l1 = freshLabel();
+		String l2 = freshLabel();
+		String l3 = freshLabel();
+		return nlJoin(
+				visit(n.left),
+				visit(n.right),
+				"stm",
+				"ltm",
+				"push 1",       //confronta se il secondo termine è true
+				"beq "+l1, 		//so che il secondo termine è uguale a true quindi il risultato dell'or è true
+				"ltm",			//se non lo è allora il secondo termine è false (0) e lo moltiplico per il primo
+				"mult",
+				"push 0",
+				"beq "+l3,		//se il risultato è uguale a 0 vuol dire che avevo false || false
+								//se il risultato è uguale a 1 vuol dire che avevo true || false
+				l1+":",			//so che uno dei due termini è uguale a false
+				"push 1",		//quindi il risultato dell'or è false
+				"b "+l2,
+				l3+":",
+				"push 0",
+				l2+":",
+				"push 0",		//reset tm
+				"stm"
+		);
+	}
+
+	@Override
+	public String visitNode(NotNode n) {
+		if (print) printNode(n,n.exp.toString());
+		String l1 = freshLabel();
+		return nlJoin(
+				visit(n.exp),
+				"push 0",
+				"beq "+l1, //l'espressione restituiva false, quindi pusho true alla label l1
+				"push 0", //altrimenti restituiva true, quindi pusho false
+				l1+":",
+				"push 1"
 		);
 	}
 
