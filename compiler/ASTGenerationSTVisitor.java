@@ -56,7 +56,6 @@ public class ASTGenerationSTVisitor extends FOOLBaseVisitor<Node> {
 		return new ProgNode(visit(c.exp()));
 	}
 
-	//todo timesdiv
 	@Override
 	public Node visitTimesDiv(TimesDivContext c) {
 		if (print) printVarAndProdName(c);
@@ -91,8 +90,25 @@ public class ASTGenerationSTVisitor extends FOOLBaseVisitor<Node> {
 	@Override
 	public Node visitComp(CompContext c) {
 		if (print) printVarAndProdName(c);
-		Node n = new EqualNode(visit(c.exp(0)), visit(c.exp(1)));
-		n.setLine(c.EQ().getSymbol().getLine());		
+		Node n;
+		String operator = c.getChild(1).getText();
+		switch(operator){
+			case "==":
+				n = new EqualNode(visit(c.exp(0)), visit(c.exp(1)));
+				n.setLine(c.EQ().getSymbol().getLine());
+				break;
+
+			case ">=":
+				n = new GreaterEqualNode(visit(c.exp(0)), visit(c.exp(1)));
+				n.setLine(c.GE().getSymbol().getLine());
+				break;
+
+			default: //case "<="
+				n = new LessEqualNode(visit(c.exp(0)), visit(c.exp(1)));
+				n.setLine(c.LE().getSymbol().getLine());
+				break;
+		}
+
         return n;		
 	}
 
