@@ -12,7 +12,7 @@ import java.nio.file.*;
 public class Test {
     public static void main(String[] args) throws Exception {
    			
-    	String fileName = "prova4.fool";
+    	String fileName = "quicksort.fool";
 
     	CharStream chars = CharStreams.fromFileName(fileName);
     	FOOLLexer lexer = new FOOLLexer(chars);
@@ -25,10 +25,10 @@ public class Test {
     		parser.getNumberOfSyntaxErrors()+" syntax errors.\n");
 
     	System.out.println("Generating AST.");
-    	ASTGenerationSTVisitor visitor = new ASTGenerationSTVisitor(); // use true to visualize the ST
+    	ASTGenerationSTVisitor visitor = new ASTGenerationSTVisitor(true); // use true to visualize the ST
     	Node ast = visitor.visit(st);
     	System.out.println("");
-
+/*
     	System.out.println("Enriching AST via symbol table.");
     	SymbolTableASTVisitor symtableVisitor = new SymbolTableASTVisitor();
     	symtableVisitor.visit(ast);
@@ -79,7 +79,7 @@ public class Test {
     	//ExecuteVM vm = new ExecuteVM(parserASM.code);
 		ExecuteVM vm = new ExecuteVM(parserASM.code,parserASM.sourceMap,Files.readAllLines(Paths.get(fileName+".asm")));
     	vm.cpu();
-
+*/
     }
 }
 
