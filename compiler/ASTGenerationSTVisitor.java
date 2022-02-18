@@ -92,21 +92,19 @@ public class ASTGenerationSTVisitor extends FOOLBaseVisitor<Node> {
 		if (print) printVarAndProdName(c);
 		Node n;
 		String operator = c.getChild(1).getText();
-		switch(operator){
-			case "==":
+		switch (operator) {
+			case "==" -> {
 				n = new EqualNode(visit(c.exp(0)), visit(c.exp(1)));
 				n.setLine(c.EQ().getSymbol().getLine());
-				break;
-
-			case ">=":
+			}
+			case ">=" -> {
 				n = new GreaterEqualNode(visit(c.exp(0)), visit(c.exp(1)));
 				n.setLine(c.GE().getSymbol().getLine());
-				break;
-
-			default: //case "<="
+			}
+			default -> { //case "<="
 				n = new LessEqualNode(visit(c.exp(0)), visit(c.exp(1)));
 				n.setLine(c.LE().getSymbol().getLine());
-				break;
+			}
 		}
 
         return n;		
