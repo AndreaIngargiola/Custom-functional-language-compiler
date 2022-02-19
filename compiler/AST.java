@@ -285,15 +285,15 @@ public class AST {
 	public static class ClassCallNode extends Node {
 		final String varId;
 		final String methodId;
-		final List<Node> parlist;
+		final List<Node> arglist;
 		STentry entry;
 		STentry methodEntry;
 		int nl;
 
-		ClassCallNode(String vi, String mi, List<Node> p) {
+		ClassCallNode(String vi, String mi, List<Node> a) {
 			varId = vi;
 			methodId = mi;
-			parlist = Collections.unmodifiableList(p);
+			arglist = Collections.unmodifiableList(a);
 		}
 
 		@Override
@@ -328,9 +328,9 @@ public class AST {
 	}
 
 	public static class RefTypeNode extends TypeNode {
-		final String id;
+		final String classId;
 		public RefTypeNode(String classId) {
-			this.id = classId;
+			this.classId = classId;
 		}
 
 		@Override
