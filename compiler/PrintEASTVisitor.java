@@ -199,4 +199,80 @@ public class PrintEASTVisitor extends BaseEASTVisitor<Void,VoidException> {
 		return null;
 	}
 
+	//################################      OBJECT ORIENTATION EXTENSION      ######################################
+	@Override
+	public Void visitNode(MethodNode n) {
+		printNode(n,n.id);
+		visit(n.retType);
+		for (ParNode par : n.parlist) visit(par);
+		for (Node dec : n.declist) visit(dec);
+		visit(n.exp);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(FieldNode n) {
+		printNode(n,n.id);
+		visit(n.getType());
+		return null;
+	}
+
+	@Override
+	public Void visitNode(ClassNode n) {
+		printNode(n,n.id);
+		visit(n.getType());
+		for (FieldNode field : n.fields) visit(field);
+		for (MethodNode method : n.methods) visit(method);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(ClassCallNode n) {
+		printNode(n,n.varId+"."+ n.methodId+" at nestinglevel "+n.nl);
+		visit(n.entry);
+		visit(n.methodEntry);
+		for (Node arg : n.arglist) visit(arg);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(NewNode n) {
+		printNode(n,n.id+" at nestinglevel "+n.nl);
+		visit(n.entry);
+		for (Node arg : n.arglist) visit(arg);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(EmptyNode n) {
+		printNode(n);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(EmptyTypeNode n) {
+		printNode(n);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(ClassTypeNode n) {
+		printNode(n);
+		for(TypeNode f : n.allFields)visit(f);
+		for(TypeNode m : n.allMethods)visit(m);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(MethodTypeNode n) {
+		printNode(n);
+		for (Node arg : n.fun.parlist) visit(arg);
+		return null;
+	}
+
+	@Override
+	public Void visitNode(RefTypeNode n) {
+		printNode(n,n.classId);
+		return null;
+	}
 }

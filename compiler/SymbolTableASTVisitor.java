@@ -8,7 +8,7 @@ import compiler.lib.*;
 public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 	
 	private List<Map<String, STentry>> symTable = new ArrayList<>();
-	private Map< String, Map<String,STentry> > classTable; //mappa i nomi delle classi alle loro virtual table.
+	private Map< String, Map<String,STentry> > classTable = new HashMap<>(); //mappa i nomi delle classi alle loro virtual table.
 	private int nestingLevel=0; // current nesting level
 	private int decOffset=-2; // counter for offset of local declarations at current nesting level 
 	int stErrors=0;
