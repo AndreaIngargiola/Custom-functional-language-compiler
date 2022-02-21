@@ -15,6 +15,7 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 
 	SymbolTableASTVisitor() {}
 	SymbolTableASTVisitor(boolean debug) {super(debug);} // enables print for debugging
+	SymbolTableASTVisitor(boolean debug, boolean print) {super(debug, print);} // enables print for debugging
 
 	private STentry stLookup(String id) {
 		int j = nestingLevel;
@@ -340,7 +341,6 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 
 		Map<String, STentry> global_hm = symTable.get(0);
 		STentry entry = global_hm.get(n.id);
-
 		if(entry == null){
 			System.out.println("Class id " + n.id + " at line "+ n.getLine() +" is not declared");
 			stErrors++;
@@ -348,6 +348,7 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 			System.out.println("Id " + n.id + " at line "+ n.getLine() +" is not an instantiable class");
 			stErrors++;
 		} else {
+
 			n.entry = entry;
 		};
 		return null;
@@ -377,4 +378,10 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 		for (Node arg : n.arglist) visit(arg);
 		return null;
 	}
+
+	public Void visitNode(EmptyNode n) {
+		if (print) printNode(n);
+		return null;
+	}
+
 }
