@@ -301,13 +301,13 @@ public class AST {
 	}
 
 	public static class NewNode extends Node {
-		final String id;
+		final String classId;
 		final List<Node> arglist;
 		STentry entry;
 		int nl;
 
 		NewNode(String i, List<Node> p) {
-			id = i;
+			classId = i;
 			arglist = Collections.unmodifiableList(p);
 		}
 

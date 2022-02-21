@@ -340,15 +340,14 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 		if (print) printNode(n);
 
 		Map<String, STentry> global_hm = symTable.get(0);
-		STentry entry = global_hm.get(n.id);
+		STentry entry = global_hm.get(n.classId);
 		if(entry == null){
-			System.out.println("Class id " + n.id + " at line "+ n.getLine() +" is not declared");
+			System.out.println("Class id " + n.classId + " at line "+ n.getLine() +" is not declared");
 			stErrors++;
-		} else if(classTable.get(n.id) == null){
-			System.out.println("Id " + n.id + " at line "+ n.getLine() +" is not an instantiable class");
+		} else if(classTable.get(n.classId) == null){
+			System.out.println("Id " + n.classId + " at line "+ n.getLine() +" is not an instantiable class");
 			stErrors++;
 		} else {
-
 			n.entry = entry;
 		};
 		return null;
