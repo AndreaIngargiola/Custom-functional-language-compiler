@@ -275,11 +275,14 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 		int fieldsOffset=-1;
 		for (FieldNode field : n.fields) {
 			ctn.allFields.add(field.getType());		//aggiornamento oggetto ClassTypeNode in STentry nome classe
+			//System.out.println(ctn.allFields.toString());
 			//aggiornamento virtual table
 			if (virtualTable.put(field.id, new STentry(nestingLevel, field.getType(), fieldsOffset--)) != null) {
 				System.out.println("Field id " + field.id + " at line " + n.getLine() + " already declared");
 				stErrors++;
 			}
+			STentry p = virtualTable.get(field.id);
+			System.out.println(p.type.toString());
 		}
 
 		//-la dichiarazione di un metodo, tramite visita di MethodNode
@@ -350,6 +353,7 @@ public class SymbolTableASTVisitor extends BaseASTVisitor<Void,VoidException> {
 		} else {
 			n.entry = entry;
 		};
+		for (Node arg : n.arglist) visit(arg);
 		return null;
 	}
 

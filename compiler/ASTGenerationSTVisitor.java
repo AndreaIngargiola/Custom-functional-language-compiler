@@ -278,8 +278,10 @@ public class ASTGenerationSTVisitor extends FOOLBaseVisitor<Node> {
 	public Node visitCldec(CldecContext c) {
 		if (print) printVarAndProdName(c);
 		List<FieldNode> fieldList = new ArrayList<>();
-		for (int i = 1; i < c.ID().size(); i++) {
-			FieldNode f = new FieldNode(c.ID(i).getText(),(TypeNode) visit(c.type(i)));
+
+		for (int i = 0; i < c.ID().size()-1; i++) {
+			//System.out.println(c.ID(i).getText() + "è di tipo "+ c.type());
+			FieldNode f = new FieldNode(c.ID(i+1).getText(),(TypeNode) visit(c.type(i)));
 			f.setLine(c.ID(i).getSymbol().getLine());
 			fieldList.add(f);
 		}

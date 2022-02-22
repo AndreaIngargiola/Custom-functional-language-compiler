@@ -12,7 +12,7 @@ import java.nio.file.*;
 public class Test {
     public static void main(String[] args) throws Exception {
    			
-    	String fileName = "quicksort.fool";
+    	String fileName = "prova4.fool";
 
     	CharStream chars = CharStreams.fromFileName(fileName);
     	FOOLLexer lexer = new FOOLLexer(chars);
@@ -30,14 +30,14 @@ public class Test {
     	System.out.println("");
 
     	System.out.println("Enriching AST via symbol table.");
-    	SymbolTableASTVisitor symtableVisitor = new SymbolTableASTVisitor();
+    	SymbolTableASTVisitor symtableVisitor = new SymbolTableASTVisitor(true, true);
     	symtableVisitor.visit(ast);
     	System.out.println("You had "+symtableVisitor.stErrors+" symbol table errors.\n");
 
     	System.out.println("Visualizing Enriched AST.");
     	new PrintEASTVisitor().visit(ast);
     	System.out.println("");
-/*
+
     	System.out.println("Checking Types.");
     	try {
     		TypeCheckEASTVisitor typeCheckVisitor = new TypeCheckEASTVisitor();
@@ -50,7 +50,7 @@ public class Test {
     		System.out.println("Type checking error in main program expression: "+e.text); 
     	}       	
     	System.out.println("You had "+FOOLlib.typeErrors+" type checking errors.\n");
-
+/*
     	int frontEndErrors = lexer.lexicalErrors+parser.getNumberOfSyntaxErrors()+symtableVisitor.stErrors+FOOLlib.typeErrors;
 		System.out.println("You had a total of "+frontEndErrors+" front-end errors.\n");
 		

@@ -303,6 +303,7 @@ public class AST {
 	public static class NewNode extends Node {
 		final String classId;
 		final List<Node> arglist;
+
 		STentry entry;
 		int nl;
 
