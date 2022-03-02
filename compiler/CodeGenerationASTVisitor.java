@@ -287,12 +287,14 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 		if (print) printNode(n,n.exp.toString());
 		String l1 = freshLabel();
 		return nlJoin(
+				"push 1",
 				visit(n.exp),
-				"push 0",
+				"sub"
+				/*"push 0",
 				"beq "+l1, //l'espressione restituiva false, quindi pusho true alla label l1
 				"push 0", //altrimenti restituiva true, quindi pusho false
 				l1+":",
-				"push 1"
+				"push 1"*/
 		);
 	}
 
@@ -319,7 +321,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 			popDecl = nlJoin(popDecl,"pop");
 		}
 		for (int i=0;i<n.parlist.size();i++) popParl = nlJoin(popParl,"pop");
-		n.label = freshLabel();
+		n.label = freshFunLabel();
 		putCode(
 				nlJoin(
 						n.label+":",
@@ -350,7 +352,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 			visit(method);
 			dt.set(method.offset, method.label);
 		}
-		String methodCode = "";
+		String methodCode = null;
 		for(String label : dt){
 			methodCode = nlJoin(methodCode,
 								"push "+label,		//per ciascuna etichetta
@@ -429,8 +431,8 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 	@Override
 	public String visitNode(NewNode n) {
 		if (print) printNode(n);
-		String argCode = "";
-		String pushArgs = "";
+		String argCode = null;
+		String pushArgs = null;
 		int pos = ExecuteVM.MEMSIZE+n.entry.offset;
 		for(Node arg:n.arglist){
 

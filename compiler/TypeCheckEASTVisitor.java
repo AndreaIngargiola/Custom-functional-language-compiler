@@ -3,6 +3,9 @@ package compiler;
 import compiler.AST.*;
 import compiler.exc.*;
 import compiler.lib.*;
+
+import java.lang.reflect.Method;
+
 import static compiler.TypeRels.*;
 
 //visitNode(n) fa il type checking di un Node n e ritorna:
@@ -60,6 +63,9 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode,TypeException
 	public TypeNode visitNode(CallNode n) throws TypeException {
 		if (print) printNode(n,n.id);
 		TypeNode t = visit(n.entry);
+		if(t instanceof MethodTypeNode){
+			t=((MethodTypeNode) t).fun; //(se ID è di tipo MethodTypeNode recupero il suo tipo funzionale
+		}
 		if ( !(t instanceof ArrowTypeNode) )
 			throw new TypeException("Invocation of a non-function "+n.id,n.getLine());
 		ArrowTypeNode at = (ArrowTypeNode) t;
@@ -265,7 +271,7 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode,TypeException
 	public TypeNode visitNode(IdNode n) throws TypeException {
 		if (print) printNode(n,n.id);
 		TypeNode t = visit(n.entry);
-		if (t instanceof ArrowTypeNode)
+		if (t instanceof ArrowTypeNode || t instanceof MethodTypeNode)
 			throw new TypeException("Wrong usage of function/method identifier " + n.id,n.getLine());
 		if (t instanceof ClassTypeNode)
 			throw new TypeException("Wrong usage of class identifier " + n.id,n.getLine());
@@ -276,9 +282,10 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode,TypeException
 	public TypeNode visitNode(ClassCallNode n) throws TypeException {
 		if (print) printNode(n,n.varId+"."+n.methodId);
 		TypeNode t = visit(n.methodEntry);
-		if ( !(t instanceof ArrowTypeNode) )
+
+		if ( !(t instanceof MethodTypeNode) )
 			throw new TypeException("Invocation of a non-function "+n.methodId,n.getLine());
-		ArrowTypeNode at = (ArrowTypeNode) t;
+		ArrowTypeNode at = ((MethodTypeNode)t).fun;
 		if ( !(at.parlist.size() == n.arglist.size()) )
 			throw new TypeException("Wrong number of parameters in the invocation of "+n.methodId,n.getLine());
 		for (int i = 0; i < n.arglist.size(); i++)
