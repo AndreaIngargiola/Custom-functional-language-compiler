@@ -295,9 +295,6 @@ public class TypeCheckEASTVisitor extends BaseEASTVisitor<TypeNode,TypeException
 		if ( !(t.allFields.size() == n.arglist.size()) )
 			throw new TypeException("Wrong number of parameters in the invocation of "+n.classId,n.getLine());
 		for (int i = 0; i < n.arglist.size(); i++) {
-			if (i == 0) {
-				System.out.println(n.arglist.get(i).toString() + "->" + t.allFields.get(i).toString());
-			}
 			if (!(isSubtype(visit(n.arglist.get(i)), t.allFields.get(i))))
 				throw new TypeException("Wrong type for " + (i + 1) + "-th parameter in the invocation of " + n.classId, n.getLine());
 		}
