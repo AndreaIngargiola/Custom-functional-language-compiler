@@ -15,7 +15,6 @@ import static compiler.lib.FOOLlib.*;
 
 public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidException> {
 
-	private List<List<String>> dispatchTables = new ArrayList<>();
   CodeGenerationASTVisitor() {}
   CodeGenerationASTVisitor(boolean debug) {super(false,debug);} //enables print for debugging
 
@@ -289,12 +288,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 		return nlJoin(
 				"push 1",
 				visit(n.exp),
-				"sub"
-				/*"push 0",
-				"beq "+l1, //l'espressione restituiva false, quindi pusho true alla label l1
-				"push 0", //altrimenti restituiva true, quindi pusho false
-				l1+":",
-				"push 1"*/
+				"sub"			//se exp è 1 allora 1-1=0 mentre se exp è 0 allora 1-0=1
 		);
 	}
 
@@ -344,17 +338,15 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 	}
 
 	public String visitNode(ClassNode n) {
-		if (print) printNode(n,n.id);;
-		List<String> dt = new ArrayList<>();
-		for (MethodNode method : n.methods) dt.add("err");
-		dispatchTables.add(dt);
+		if (print) printNode(n,n.id);
+		String[] dt = new String[n.methods.size()];
 		for(MethodNode method : n.methods){
 			visit(method);
-			dt.set(method.offset, method.label);
+			dt[method.offset] =  method.label;
 		}
-		String methodCode = null;
+		String dispatchTableCode = null;
 		for(String label : dt){
-			methodCode = nlJoin(methodCode,
+			dispatchTableCode = nlJoin(dispatchTableCode,
 								"push "+label,		//per ciascuna etichetta
 								"lhp",
 								"sw",				//la memorizzo a indirizzo in $hp
@@ -367,7 +359,7 @@ public class CodeGenerationASTVisitor extends BaseASTVisitor<String, VoidExcepti
 
 		return nlJoin(
 				"lhp",			//metto valore di $hp sullo stack: sarà il dispatch pointer da ritornare alla fine
-				methodCode
+				dispatchTableCode
 		);
 	}
 
